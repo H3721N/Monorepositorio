@@ -1,0 +1,5 @@
+bin/
+obj/
+coverage-report/
+TestResults/
+tests/**/TestResults/
