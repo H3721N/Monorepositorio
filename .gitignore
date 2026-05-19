@@ -1,0 +1,31 @@
+# .NET
+bin/
+obj/
+TestResults/
+coverage-report/
+*.lscache
+
+# SQLite local database
+app.db
+app.db-shm
+app.db-wal
+
+# Node
+node_modules/
+dist/
+coverage/
+.turbo/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vs/
+.vscode/

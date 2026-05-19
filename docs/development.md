@@ -1,13 +1,14 @@
 # Desarrollo local
 
-Esta guía resume cómo levantar, probar y depurar el monorepo en local.
+Esta guía resume cómo levantar, probar y depurar el monorepo en local después de la reestructura a `apps/api` y `apps/web`.
 
 ## Levantar backend
 
+Desde la raíz:
+
 ```powershell
-cd backend
-dotnet restore .\MonorepoBackend.sln
-dotnet run --project .\API\API.csproj --launch-profile http
+dotnet restore .\apps\api\MonorepoBackend.sln
+dotnet run --project .\apps\api\src\API\API.csproj --launch-profile http
 ```
 
 URLs:
@@ -20,9 +21,8 @@ El perfil `http` usa `ASPNETCORE_ENVIRONMENT=Development`, inicializa SQLite y h
 ## Levantar frontend
 
 ```powershell
-cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm --dir .\apps\web dev
 ```
 
 URL:
@@ -35,7 +35,19 @@ El frontend consume `http://localhost:5080` por defecto. Para cambiarlo:
 
 ```powershell
 $env:VITE_API_BASE_URL="http://localhost:5080"
-npm run dev
+pnpm --dir .\apps\web dev
+```
+
+## Scripts desde la raíz
+
+```powershell
+pnpm dev
+pnpm dev:api
+pnpm dev:web
+pnpm build
+pnpm test
+pnpm test:coverage
+pnpm --dir .\apps\web test:e2e
 ```
 
 ## Login inicial
@@ -47,33 +59,23 @@ Password: Admin123!
 
 Este usuario se crea al iniciar la API en ambiente de desarrollo.
 
-## Flujo recomendado de trabajo
-
-1. Iniciar backend.
-2. Abrir Swagger y verificar `GET /api/admin/users/me` con token si se está depurando auth.
-3. Iniciar frontend.
-4. Iniciar sesión con el usuario admin.
-5. Probar países, departamentos, usuarios y cambio de contraseña.
-6. Ejecutar pruebas antes de cerrar cambios.
-
 ## Comandos útiles
 
 Backend:
 
 ```powershell
-cd backend
-dotnet build .\MonorepoBackend.sln
-dotnet test .\MonorepoBackend.sln
-powershell -ExecutionPolicy Bypass -File .\test-coverage.ps1
+dotnet build .\apps\api\MonorepoBackend.sln
+dotnet test .\apps\api\MonorepoBackend.sln
+powershell -ExecutionPolicy Bypass -File .\apps\api\test-coverage.ps1
 ```
 
 Frontend:
 
 ```powershell
-cd frontend
-npm run test
-npm run test:coverage
-npm run build
+pnpm --dir .\apps\web test
+pnpm --dir .\apps\web test:coverage
+pnpm --dir .\apps\web test:e2e
+pnpm --dir .\apps\web build
 ```
 
 ## Swagger y Bearer token
@@ -89,7 +91,7 @@ npm run build
 SQLite se guarda en:
 
 ```text
-backend/Infrastructure/app.db
+apps/api/src/Infrastructure/app.db
 ```
 
 En desarrollo se crean tablas de autenticación si no existen y se asegura el usuario admin. Los archivos de base local y artefactos generados no deben versionarse.
@@ -127,14 +129,14 @@ Los nombres válidos son `COUNTRY`, `DEPARTMENT` y `USER_ADMIN`; los IDs pueden 
 Revisar:
 
 ```text
-frontend/src/utils/roles.ts
+apps/web/src/utils/roles.ts
 ```
 
 Ese archivo centraliza el mapeo usado por los formularios de usuarios.
 
 ### Vitest muestra `Worker exited unexpectedly`
 
-Usar los scripts actuales de `package.json`. Ya están configurados con un solo fork para estabilizar la ejecución.
+Usar los scripts actuales de `apps/web/package.json`. Ya están configurados con un solo fork para estabilizar la ejecución.
 
 ### Build de backend falla por archivo bloqueado
 

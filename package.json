@@ -1,0 +1,18 @@
+{
+  "name": "proyecto-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "corepack pnpm --dir apps/web dev",
+    "dev:web": "corepack pnpm --dir apps/web dev",
+    "dev:api": "dotnet run --project apps/api/src/API/API.csproj --launch-profile http",
+    "build": "dotnet build apps/api/MonorepoBackend.sln && corepack pnpm --dir apps/web build",
+    "test": "dotnet test apps/api/MonorepoBackend.sln && corepack pnpm --dir apps/web test",
+    "test:coverage": "powershell -ExecutionPolicy Bypass -File apps/api/test-coverage.ps1 && corepack pnpm --dir apps/web test:coverage",
+    "test:e2e": "corepack pnpm --dir apps/web test:e2e"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  }
+}
